@@ -1,5 +1,13 @@
 
 
+## [0.6.0](https://github.com/MarianoJimenezPerez/podcaster-app/compare/0.5.0...0.6.0) (2024-04-03)
+
+
+### Features
+
+* episode detail page completed ([32b1fe4](https://github.com/MarianoJimenezPerez/podcaster-app/commit/32b1fe487141a38db8f36b83cec5d183119fb38a))
+* readme updated ([ac7df5b](https://github.com/MarianoJimenezPerez/podcaster-app/commit/ac7df5b4be8bde93f34e93e5f3a4a2e416fa9dfe))
+
 ## [0.5.0](https://github.com/MarianoJimenezPerez/podcaster-app/compare/0.4.0...0.5.0) (2024-04-03)
 
 
