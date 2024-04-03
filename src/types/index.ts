@@ -103,3 +103,9 @@ export interface EpisodeDetail {
   pubDate: string | null;
   duration: string | null;
 }
+export interface Episode {
+  guid: string | null;
+  title: string | null;
+  description: string | null;
+  enclosure: string | null;
+}

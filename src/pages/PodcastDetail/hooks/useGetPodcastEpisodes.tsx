@@ -45,7 +45,6 @@ const useGetPodcastEpisodes = (feedUrl: string): UseGetPodcastEpisodesReturnType
               duration
             });
           }
-          console.log(processedEpisodes);
           setEpisodes(processedEpisodes);
           setIsLoading(false);
         }

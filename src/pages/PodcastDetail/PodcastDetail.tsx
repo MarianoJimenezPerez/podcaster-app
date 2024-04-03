@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import useGetPodcastEpisodes from './hooks/useGetPodcastEpisodes';
 import './podcastDetail.scss';
 import { usePodcastContext } from '@/hooks/usePodcastContext';
-import { formatTime } from '@/utils/functions/formatTime';
 
 const PodcastDetail: React.FC = () => {
   const { podcastDetail } = usePodcastContext();
@@ -28,7 +27,7 @@ const PodcastDetail: React.FC = () => {
                   <Link to={`./episode/${episode.guid}`}>{episode.title}</Link>
                 </td>
                 <td>{episode.pubDate}</td>
-                <td>{formatTime(Number(episode.duration))}</td>
+                <td>{episode.duration}</td>
               </tr>
             ))}
           </tbody>
