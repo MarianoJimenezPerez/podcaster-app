@@ -1,4 +1,10 @@
+import PodcastsList from '@/components/PodcastsList/PodcastsList';
+
 const Home: React.FC = () => {
-  return <div>Home</div>;
+  return (
+    <main>
+      <PodcastsList />
+    </main>
+  );
 };
 export default Home;
