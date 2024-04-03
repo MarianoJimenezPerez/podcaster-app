@@ -1,7 +1,7 @@
 {
   "name": "podcaster-app",
   "private": true,
-  "version": "0.3.0",
+  "version": "0.4.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -44,6 +44,7 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.28.14",
+    "axios": "^1.6.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.22.3"
@@ -53,6 +54,7 @@
     "@commitlint/config-conventional": "^19.1.0",
     "@release-it/conventional-changelog": "^8.0.1",
     "@tanstack/eslint-plugin-query": "^5.28.11",
+    "@tanstack/react-query-devtools": "^5.28.14",
     "@types/node": "^20.12.3",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
