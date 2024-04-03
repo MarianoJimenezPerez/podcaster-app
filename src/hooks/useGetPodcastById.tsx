@@ -75,7 +75,7 @@ const useGetPodcastById = (podcastId: string): UseGetPodcastByIdReturnType => {
     };
 
     fetchData();
-  }, [podcastId, setPodcastDetail]);
+  }, [podcastId]);
 
   return { podcast, isLoading, isError };
 };

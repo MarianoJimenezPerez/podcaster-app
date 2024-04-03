@@ -9,14 +9,14 @@ const PodcastSidebar: React.FC = () => {
   return (
     <aside className="sidebar shadow">
       {isLoading && <p>Loading...</p>}
-      {isError && <p>Something went wrong. Try again later</p>}
-      {podcast && (
+      {isError && !podcast && !isLoading && <p>Something went wrong. Try again later</p>}
+      {podcast && !isError && !isLoading && (
         <div>
           <img src={podcast.artworkUrl100} alt={podcast.collectionName} /> {/* podcast image */}
         </div>
       )}
       <div>
-        {podcast && (
+        {podcast && !isError && !isLoading && (
           <>
             <h2>{podcast.collectionName}</h2>
             <h3>
