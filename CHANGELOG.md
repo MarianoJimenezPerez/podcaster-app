@@ -1,5 +1,12 @@
 
 
+## [0.5.0](https://github.com/MarianoJimenezPerez/podcaster-app/compare/0.4.0...0.5.0) (2024-04-03)
+
+
+### Features
+
+* podcast detail page dynamic & persistance ([34e7842](https://github.com/MarianoJimenezPerez/podcaster-app/commit/34e784230e16575ec1679d21adbdd526d30ad00e))
+
 ## [0.4.0](https://github.com/MarianoJimenezPerez/podcaster-app/compare/0.3.0...0.4.0) (2024-04-03)
 
 
