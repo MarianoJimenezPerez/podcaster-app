@@ -1,5 +1,12 @@
 
 
+## [0.6.1](https://github.com/MarianoJimenezPerez/podcaster-app/compare/0.6.0...0.6.1) (2024-04-03)
+
+
+### Bug Fixes
+
+* react query removed, unused ([2c6a939](https://github.com/MarianoJimenezPerez/podcaster-app/commit/2c6a939a9339c0dfa3a634616cd1e1a3442ae44e))
+
 ## [0.6.0](https://github.com/MarianoJimenezPerez/podcaster-app/compare/0.5.0...0.6.0) (2024-04-03)
 
 
