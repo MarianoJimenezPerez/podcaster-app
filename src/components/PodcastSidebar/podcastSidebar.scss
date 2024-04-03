@@ -1,0 +1,41 @@
+@import '@/styles/base/variables';
+.sidebar {
+  width: 25%;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: max-content;
+  @media screen and (max-width: $large-screen) {
+    width: 100%;
+    margin-bottom: 2rem;
+  }
+  div {
+    overflow: scroll;
+    display: flex;
+    flex-direction: column;
+  }
+  img {
+    align-self: center;
+    padding: 20px 30px;
+    @media screen and (max-width: $large-screen) {
+      padding: 0;
+      object-fit: cover;
+      width: 150px;
+      align-self: center;
+    }
+  }
+  h2 {
+    border-top: 1px solid $color-gray;
+    padding-top: 20px;
+  }
+  h3 {
+    font-size: 16px;
+    font-weight: 400;
+  }
+  p {
+    border-top: 1px solid $color-gray;
+    padding-top: 20px;
+  }
+}

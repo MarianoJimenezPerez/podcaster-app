@@ -2,7 +2,13 @@ import { axiosInstance } from '@/axios/config';
 import { useEffect, useState } from 'react';
 import { Podcast } from '@/types';
 
-export const useGetPodcasts = () => {
+interface UseGetPodcastsReturnType {
+  podcasts: Podcast[];
+  isLoading: boolean;
+  isError: boolean;
+}
+
+export const useGetPodcasts = (): UseGetPodcastsReturnType => {
   const [podcasts, setPodcasts] = useState<Podcast[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);

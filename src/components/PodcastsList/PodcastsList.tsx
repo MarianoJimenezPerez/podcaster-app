@@ -28,7 +28,7 @@ const PodcastsList: React.FC = () => {
         <div className="container">
           {isLoading && <Loader />}
           {!isLoading && isError && <p>Something went wrong. Try again later.</p>}
-          {!isLoading && filteredPodcasts?.length === 0 && <p>No podcasts found.</p>}
+          {!isLoading && !isError && filteredPodcasts?.length === 0 && <p>No podcasts found.</p>}
           {!isError &&
             !isLoading &&
             filteredPodcasts &&
