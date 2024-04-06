@@ -4,11 +4,14 @@ import PodcastCard from '../PodcastCard/PodcastCard';
 import Loader from '../Loader/Loader';
 import './podcastsList.scss';
 import { useGetPodcasts } from '@/hooks/useGetPodcasts';
+import { useFetchingContext } from '@/hooks/useFetchingContext';
 
 const PodcastsList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>('');
 
-  const { podcasts: data, isLoading, isError } = useGetPodcasts();
+  const { podcasts: data, isError } = useGetPodcasts();
+
+  const { isFetching } = useFetchingContext();
 
   const filteredPodcasts = data
     ? [...data].filter(
@@ -26,11 +29,11 @@ const PodcastsList: React.FC = () => {
       />
       <section className="podcasts__list">
         <div className="container">
-          {isLoading && <Loader />}
-          {!isLoading && isError && <p>Something went wrong. Try again later.</p>}
-          {!isLoading && !isError && filteredPodcasts?.length === 0 && <p>No podcasts found.</p>}
+          {isFetching && <Loader />}
+          {!isFetching && isError && <p>Something went wrong. Try again later.</p>}
+          {!isFetching && !isError && filteredPodcasts?.length === 0 && <p>No podcasts found.</p>}
           {!isError &&
-            !isLoading &&
+            !isFetching &&
             filteredPodcasts &&
             filteredPodcasts.map((_podcast) => (
               <PodcastCard podcast={_podcast} key={_podcast.id.attributes['im:id']} />

@@ -1,67 +1,70 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { transformHtmlToText } from '@/utils/functions/transformHTMLToText';
-import { Episode } from '@/types';
+import { Episode, PodcastDetail } from '@/types';
+import { getFeed } from '@/services/getFeed';
+import { xml2json } from 'xml-js';
 
 interface useGetEpisodeReturnType {
   episode: Episode[] | null;
-  isLoading: boolean;
   isError: boolean;
+  isLoading: boolean;
 }
 
-const useGetEpisode = (feedUrl: string, episodeId: string): useGetEpisodeReturnType => {
+const useGetEpisode = (
+  podcastDetail: PodcastDetail | null,
+  episodeId: string
+): useGetEpisodeReturnType => {
   const [episode, setEpisode] = useState<Episode[] | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
+      if (!podcastDetail || !episodeId) {
+        return;
+      }
+
       try {
-        const response = await axios.get(feedUrl, {
-          responseType: 'text',
-          withCredentials: false
-        }); // no need the base url, so use axios directly
+        setIsLoading(true);
+        const abortController = new AbortController();
+        const xmlFeedData = await getFeed(podcastDetail.feedUrl, abortController.signal);
+        const jsonFeedData = xml2json(xmlFeedData, { compact: true, spaces: 4 });
+        const parsedFeed = JSON.parse(jsonFeedData);
 
-        if (window.DOMParser) {
-          const parser = new DOMParser();
-          const xmlDoc = parser.parseFromString(response.data, 'text/xml');
+        const items = parsedFeed.rss.channel.item;
 
-          const tags = xmlDoc.getElementsByTagName('item');
-          for (let i = 0; i < tags.length; i++) {
-            const item = tags[i];
-            const guid = item.getElementsByTagName('guid')[0].textContent;
-            if (guid === episodeId) {
-              console.log(guid);
-              const title = item.getElementsByTagName('title')[0].textContent;
-              const description = item.getElementsByTagName('description')[0].textContent;
+        for (let i = 0; i < items.length; i++) {
+          const item = items[i];
+          const guid = item.guid._text;
+          if (guid === episodeId) {
+            console.log(item);
+            const title = item.title._text;
+            const description = item.description._cdata;
 
-              const enclosureTag = item.getElementsByTagName('enclosure')[0];
-              const enclosure = enclosureTag ? enclosureTag.getAttribute('url') : null;
+            const enclosure = item.enclosure._attributes.url ?? '';
 
-              setEpisode(() => [
-                {
-                  guid,
-                  title,
-                  description: transformHtmlToText(description || ''),
-                  enclosure
-                }
-              ]);
-            }
+            setEpisode(() => [
+              {
+                guid,
+                title,
+                description: transformHtmlToText(description ?? ''),
+                enclosure
+              }
+            ]);
           }
-
-          console.log(episode);
-          setIsLoading(false);
         }
       } catch (error) {
         setIsError(true);
+        console.error(error);
+      } finally {
         setIsLoading(false);
       }
     };
 
     fetchData();
-  }, [episodeId, feedUrl]);
+  }, [podcastDetail, episodeId]);
 
-  return { episode, isLoading, isError };
+  return { episode, isError, isLoading };
 };
 
 export default useGetEpisode;
