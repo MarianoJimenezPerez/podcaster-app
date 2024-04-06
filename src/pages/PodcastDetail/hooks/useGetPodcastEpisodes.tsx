@@ -1,63 +1,65 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { getFeed } from '@/services/getFeed';
+import { EpisodeDetail, EpisodeFromFeed, PodcastDetail } from '@/types';
 import { formatDate } from '@/utils/functions/formatDate';
-import { EpisodeDetail } from '@/types';
+import { useEffect, useState, useCallback } from 'react';
+import { xml2json } from 'xml-js';
 
 interface UseGetPodcastEpisodesReturnType {
   episodes: EpisodeDetail[] | null;
-  isLoading: boolean;
   isError: boolean;
+  isLoading: boolean;
 }
 
-const useGetPodcastEpisodes = (feedUrl: string): UseGetPodcastEpisodesReturnType => {
+const useGetPodcastEpisodes = (
+  podcastDetail: PodcastDetail | null
+): UseGetPodcastEpisodesReturnType => {
   const [episodes, setEpisodes] = useState<EpisodeDetail[] | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isError, setIsError] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const fetchData = useCallback(async () => {
+    if (podcastDetail === null) {
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const abortController = new AbortController();
+      const feedDataXml = await getFeed(podcastDetail.feedUrl, abortController.signal);
+
+      if (feedDataXml) {
+        const feedDataJson = xml2json(feedDataXml, { compact: true, spaces: 4 });
+        const parsedFeed = JSON.parse(feedDataJson);
+
+        const episodesJson = parsedFeed?.rss?.channel?.item;
+
+        const processedEpisodes: EpisodeDetail[] = episodesJson.map((ep: EpisodeFromFeed) => {
+          const duration = ep['itunes:duration']?._text || 'Unknown';
+          return {
+            guid: ep.guid?._text || ep.guid?._cdata || '',
+            title: ep.title?._text || '',
+            description: ep.description?._text || '',
+            pubDate: formatDate(ep.pubDate?._text) || '',
+            duration
+          };
+        });
+
+        setEpisodes(processedEpisodes);
+        setIsError(false);
+      }
+    } catch (error) {
+      console.error(error);
+      setIsError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [podcastDetail]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(feedUrl, {
-          responseType: 'text',
-          withCredentials: false
-        }); // no need the base url, so use axios directly
-
-        if (window.DOMParser) {
-          const parser = new DOMParser();
-          const xmlDoc = parser.parseFromString(response.data, 'text/xml');
-
-          const tags = xmlDoc.getElementsByTagName('item');
-          const processedEpisodes = [];
-
-          for (let i = 0; i < tags.length; i++) {
-            const item = tags[i];
-            const guid = item.getElementsByTagName('guid')[0].textContent;
-            const title = item.getElementsByTagName('title')[0].textContent;
-            const description = item.getElementsByTagName('description')[0].textContent;
-            const pubDate = item.getElementsByTagName('pubDate')[0].textContent;
-            const duration = item.getElementsByTagName('itunes:duration')[0].textContent;
-
-            processedEpisodes.push({
-              guid,
-              title,
-              description,
-              pubDate: pubDate ? formatDate(pubDate) : '',
-              duration
-            });
-          }
-          setEpisodes(processedEpisodes);
-          setIsLoading(false);
-        }
-      } catch (error) {
-        setIsError(true);
-        setIsLoading(false);
-      }
-    };
-
     fetchData();
-  }, [feedUrl]);
+  }, [fetchData]);
 
-  return { episodes, isLoading, isError };
+  return { episodes, isError, isLoading };
 };
 
 export default useGetPodcastEpisodes;

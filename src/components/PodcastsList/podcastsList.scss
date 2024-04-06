@@ -2,8 +2,16 @@
 .podcasts__list {
   .container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     row-gap: 190px;
     column-gap: 30px;
+
+    @media (max-width: $large-screen) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: $small-screen) {
+      grid-template-columns: repeat(1, 1fr);
+    }
   }
 }

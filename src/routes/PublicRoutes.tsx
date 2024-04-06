@@ -1,4 +1,5 @@
 import Loader from '@/components/Loader/Loader';
+import { PodcastProvider } from '@/context/PodcastContext';
 import GlobalLayout from '@/layouts/GlobalLayout/GlobalLayout';
 import PodcastLayout from '@/layouts/PodcastLayout/PodcastLayout';
 import { Suspense, lazy } from 'react';
@@ -11,15 +12,17 @@ const LazyEpisodeDetail = lazy(() => import('@/pages/EpisodeDetail/EpisodeDetail
 const PublicRoutes = (): React.ReactNode => {
   return (
     <Suspense fallback={<Loader />}>
-      <Routes>
-        <Route element={<GlobalLayout />}>
-          <Route path="/" element={<LazyHome />} />
-          <Route path="/podcast/*" element={<PodcastLayout />}>
-            <Route path=":podcastId" element={<LazyPodcastDetail />} />
-            <Route path=":podcastId/episode/:episodeId" element={<LazyEpisodeDetail />} />
+      <PodcastProvider>
+        <Routes>
+          <Route element={<GlobalLayout />}>
+            <Route path="/" element={<LazyHome />} />
+            <Route path="/podcast/*" element={<PodcastLayout />}>
+              <Route path=":podcastId" element={<LazyPodcastDetail />} />
+              <Route path=":podcastId/episode/:episodeId" element={<LazyEpisodeDetail />} />
+            </Route>
           </Route>
-        </Route>
-      </Routes>
+        </Routes>
+      </PodcastProvider>
     </Suspense>
   );
 };
