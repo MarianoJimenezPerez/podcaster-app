@@ -94,6 +94,14 @@ export interface PodcastDetail {
   artworkUrl600: string;
   genreIds: string[];
   genres: string[];
+  description: string;
+}
+export interface EpisodeFromFeed {
+  guid: { _text: string; _cdata: string };
+  title: { _text: string };
+  description: { _text: string };
+  pubDate: { _text: string };
+  'itunes:duration'?: { _text: string };
 }
 
 export interface EpisodeDetail {

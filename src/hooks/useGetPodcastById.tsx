@@ -1,32 +1,25 @@
 import { useState, useEffect } from 'react';
-import { axiosInstance } from '@/axios/config';
 import { PodcastDetail } from '@/types';
-import axios from 'axios';
 import { transformHtmlToText } from '@/utils/functions/transformHTMLToText';
-import { usePodcastContext } from './usePodcastContext';
-
-interface PodcastDetailWithDescription extends PodcastDetail {
-  description: string;
-}
+import { getPodcast } from '@/services/getPodcast';
+import { getPodcastDescription } from '@/services/getPodcastDescription';
+import { useFetchingContext } from './useFetchingContext';
 
 interface UseGetPodcastByIdReturnType {
-  podcast: PodcastDetailWithDescription | null;
-  isLoading: boolean;
+  podcast: PodcastDetail | null;
   isError: boolean;
 }
 
 const useGetPodcastById = (podcastId: string): UseGetPodcastByIdReturnType => {
-  const [podcast, setPodcast] = useState<PodcastDetailWithDescription | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [podcast, setPodcast] = useState<PodcastDetail | null>(null);
   const [isError, setIsError] = useState<boolean>(false);
 
-  const { setPodcastDetail } = usePodcastContext();
+  const { updateFetching } = useFetchingContext();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // will manage the local persistance
-        // check if podcast with the given ID is stored in local storage and valid
+        updateFetching(true);
         const localPodcast = localStorage.getItem(`podcast_${podcastId}`);
         const localTimestamp = localStorage.getItem(`podcast_${podcastId}_timestamp`);
 
@@ -35,49 +28,33 @@ const useGetPodcastById = (podcastId: string): UseGetPodcastByIdReturnType => {
           localTimestamp &&
           Date.now() - parseInt(localTimestamp) < 1000 * 60 * 60 * 24 // 24 hours
         ) {
-          setPodcastDetail(JSON.parse(localPodcast)); // <--- set podcast in to the PodcastContext
           setPodcast(JSON.parse(localPodcast));
-          setIsLoading(false);
         } else {
-          // will manage the async persistance & fetching
-          const response = await axiosInstance.get(
-            `https://itunes.apple.com/lookup?id=${podcastId}&entity=podcast`
-          );
-          const data = response.data.results[0];
-          setPodcastDetail(data); // <--- set podcast in to the PodcastContext
+          const abortController = new AbortController();
+          const podcastResponse = await getPodcast(podcastId, abortController.signal);
+          const data = podcastResponse.results[0];
 
-          // get podcast description by a feedUrl, in the future could separate in a independent service if need it
-          const descriptionResponse = await axios.get(data.feedUrl, {
-            responseType: 'text',
-            withCredentials: false
-          }); // no need the base url, so use axios directly
+          const descriptionResponse = await getPodcastDescription(data.feedUrl);
 
-          if (window.DOMParser) {
-            const parser = new DOMParser();
-            const xmlDoc = parser.parseFromString(descriptionResponse.data, 'text/xml');
+          data.description = transformHtmlToText(descriptionResponse);
 
-            const desc = xmlDoc.getElementsByTagName('description');
-
-            if (desc[0].textContent) {
-              data.description = transformHtmlToText(desc[0].textContent);
-            }
-          }
-
-          setPodcast(data);
           localStorage.setItem(`podcast_${podcastId}`, JSON.stringify(data));
           localStorage.setItem(`podcast_${podcastId}_timestamp`, Date.now().toString());
-          setIsLoading(false);
+
+          setPodcast(data);
         }
       } catch (error) {
         setIsError(true);
-        setIsLoading(false);
+        console.error(error);
+      } finally {
+        updateFetching(false);
       }
     };
 
     fetchData();
   }, [podcastId]);
 
-  return { podcast, isLoading, isError };
+  return { podcast, isError };
 };
 
 export default useGetPodcastById;
