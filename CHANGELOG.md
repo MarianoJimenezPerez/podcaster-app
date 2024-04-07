@@ -1,5 +1,12 @@
 
 
+## [0.6.4](https://github.com/MarianoJimenezPerez/podcaster-app/compare/0.6.3...0.6.4) (2024-04-07)
+
+
+### Bug Fixes
+
+* readme updated ([4fec745](https://github.com/MarianoJimenezPerez/podcaster-app/commit/4fec745a506b9ad71bd3d7282ed7b3223eaee2af))
+
 ## [0.6.3](https://github.com/MarianoJimenezPerez/podcaster-app/compare/0.6.2...0.6.3) (2024-04-07)
 
 
