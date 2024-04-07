@@ -4,11 +4,15 @@ import './podcastCard.scss';
 
 interface PodcastCartProps {
   podcast: Podcast;
+  dataTestId?: string;
 }
 
-const PodcastCard: React.FC<PodcastCartProps> = ({ podcast }) => {
+const PodcastCard: React.FC<PodcastCartProps> = ({ podcast, dataTestId }) => {
   return (
-    <Link className="podcast__card shadow" to={`/podcast/${podcast.id.attributes['im:id']}`}>
+    <Link
+      className="podcast__card shadow"
+      to={`/podcast/${podcast.id.attributes['im:id']}`}
+      data-testid={dataTestId}>
       <article>
         <div className="heading">
           <img src={podcast['im:image'][0].label} alt={podcast['im:image'][0].label} />

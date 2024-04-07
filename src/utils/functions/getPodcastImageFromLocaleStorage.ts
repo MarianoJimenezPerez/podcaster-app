@@ -6,7 +6,7 @@ export const getPodcastImageFromLocalStorage = (podcastId: string) => {
     const podcastsData = JSON.parse(storedPodcasts);
     const found = podcastsData.find((el: Podcast) => el.id.attributes['im:id'] === podcastId);
     if (found) {
-      return found['im:image'][0].label; // return image property
+      return found['im:image'][0].label;
     }
   }
   return null;
