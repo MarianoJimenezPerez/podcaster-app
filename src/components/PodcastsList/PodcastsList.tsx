@@ -35,8 +35,12 @@ const PodcastsList: React.FC = () => {
           {!isError &&
             !isFetching &&
             filteredPodcasts &&
-            filteredPodcasts.map((_podcast) => (
-              <PodcastCard podcast={_podcast} key={_podcast.id.attributes['im:id']} />
+            filteredPodcasts.map((_podcast, index) => (
+              <PodcastCard
+                podcast={_podcast}
+                key={_podcast.id.attributes['im:id']}
+                dataTestId={`podcast-${index}`}
+              />
             ))}
         </div>
       </section>
