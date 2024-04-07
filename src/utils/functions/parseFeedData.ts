@@ -7,11 +7,15 @@ export const parseFeedData = (feedDataXml: string): EpisodeDetail[] => {
   const parsedFeed = JSON.parse(feedDataJson);
   const episodesJson = parsedFeed?.rss?.channel?.item;
 
+  if (!Array.isArray(episodesJson)) {
+    return [];
+  }
+
   return episodesJson.map((ep: EpisodeFromFeed) => ({
-    guid: ep.guid?._text || '',
-    title: ep.title?._text || '',
-    description: ep.description?._text || '',
-    pubDate: formatDate(ep.pubDate?._text) || '',
-    duration: ep['itunes:duration']?._text || 'Unknown'
+    guid: ep.guid?._text ?? '',
+    title: ep.title?._text ?? '',
+    description: ep.description?._text ?? '',
+    pubDate: formatDate(ep.pubDate?._text) ?? '',
+    duration: ep['itunes:duration']?._text ?? 'Unknown'
   }));
 };

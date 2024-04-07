@@ -13,7 +13,7 @@ const Header: React.FC = () => {
         <div className="logo">
           <Link to={'/'}>Podcaster</Link>
         </div>
-        <div className={indicatorClass}></div>
+        <div className={indicatorClass} data-testid="fetching-indicator"></div>
       </div>
     </header>
   );
